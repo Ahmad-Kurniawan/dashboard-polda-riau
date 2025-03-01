@@ -21,7 +21,7 @@ import { pelalawanOtherCompanies } from "./other-company/Pelalawan";
 import { rohilOtherCompanies } from "./other-company/Rohil";
 import { rohulOtherCompanies } from "./other-company/Rohul";
 import { siakOtherCompanies } from "./other-company/Siak";
-import { inhilPolsek } from "./polsek/inhil-polsek";
+import { dumaiPolsek } from "./polsek/dumai-polsek";
 
 export const riauCity: City[] = [
   {
@@ -61,7 +61,7 @@ export const riauCity: City[] = [
     totalTarget: 32474.14,
     companies: inhilCompanies,
     otherCompanies: inhilOtherCompanies,
-    policestations: inhilPolsek,
+    policestations: [],
   },
   {
     id: 4,
@@ -178,6 +178,6 @@ export const riauCity: City[] = [
     totalTarget: 287.5,
     companies: [],
     otherCompanies: dumaiOtherCompanies,
-    policestations: [],
+    policestations: dumaiPolsek,
   },
 ];

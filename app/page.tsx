@@ -3,7 +3,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
-import { City, Company } from "@/types";
+import { City, Company, Polsek } from "@/types";
 import { riauCity } from "@/data/RiauCity";
 import Image from "next/image";
 import CompanyDetailsModal from "@/components/CompanyDetail";
@@ -18,6 +18,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import NewRangking from "@/components/NewRangking";
+import PolsekDetail from "@/components/PolsekDetail";
 
 const MapMarker = dynamic(() => import("@/components/MapMarker"), {
   ssr: false,
@@ -35,7 +36,19 @@ const DashboardRiauPage = () => {
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [selectedOtherCompany, setSelectedOtherCompany] =
     useState<Company | null>(null);
+  const [selectedPolsek, setSelectedPolsek] = useState<Polsek | null>(null);
+  const [isPolsekModalOpen, setIsPolsekModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handlePolsekClick = (polsek: Polsek) => {
+    setSelectedPolsek(polsek);
+    setIsPolsekModalOpen(true);
+  };
+
+  const handleClosePolsekModal = () => {
+    setIsPolsekModalOpen(false);
+    setSelectedPolsek(null);
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -409,8 +422,8 @@ const DashboardRiauPage = () => {
                   </CardTitle>
                   {selectedCity ? (
                     <CardDescription>
-                      Total {selectedCity.policestations?.length || 0} polsek di wilayah
-                      ini.
+                      Total {selectedCity.policestations?.length || 0} polsek di
+                      wilayah ini.
                     </CardDescription>
                   ) : (
                     <CardDescription>
@@ -422,26 +435,29 @@ const DashboardRiauPage = () => {
                 <CardContent className="p-0 overflow-y-auto max-h-[500px]">
                   {selectedCity ? (
                     <div className="p-4">
-                      {selectedCity.policestations && selectedCity.policestations.length > 0 ? (
+                      {selectedCity.policestations &&
+                      selectedCity.policestations.length > 0 ? (
                         <Table>
                           <TableBody>
-                            {selectedCity.policestations.map((polsek, index) => (
-                              <TableRow
-                                key={polsek.id}
-                                className="border-b hover:bg-blue-50/50 transition-colors"
-                              >
-                                <motion.td
-                                  variants={tableRowVariants}
-                                  initial="hidden"
-                                  animate="visible"
-                                  transition={{ delay: index * 0.1 }}
-                                  className="p-4 font-medium"
+                            {selectedCity.policestations.map(
+                              (polsek, index) => (
+                                <TableRow
+                                  key={polsek.id}
+                                  className="border-b hover:bg-blue-50/50 transition-colors"
+                                  onClick={() => handlePolsekClick(polsek)}
                                 >
-                                  {polsek.name}
-                                </motion.td>
-                                
-                              </TableRow>
-                            ))}
+                                  <motion.td
+                                    variants={tableRowVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    transition={{ delay: index * 0.1 }}
+                                    className="p-4 font-medium"
+                                  >
+                                    {polsek.name}
+                                  </motion.td>
+                                </TableRow>
+                              )
+                            )}
                           </TableBody>
                         </Table>
                       ) : (
@@ -556,6 +572,13 @@ const DashboardRiauPage = () => {
             </motion.div>
           </div>
         </div>
+        {selectedPolsek && (
+          <PolsekDetail
+            polsek={selectedPolsek}
+            isOpen={isPolsekModalOpen}
+            onClose={handleClosePolsekModal}
+          />
+        )}
         {selectedCompany && (
           <CompanyDetailsModal
             company={selectedCompany}

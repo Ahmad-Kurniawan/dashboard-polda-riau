@@ -52,17 +52,27 @@ export interface Company {
 }
 
 
-
 export interface Polsek {
-  id: number; 
-  name: string; 
-  area: number;
-  coordinates: [number, number]; 
-  villages: {
-    id: number | null; 
-    name: string | null; 
-  }[];
+  id: number;
+  name: string;                                          
+  villages?: Village[];
 }
+
+export interface Village {
+  id?: string | number;
+  name: string;
+  target?: number;
+  percontohanStatus?: string;    
+  chief?: string;                
+  rank?: string;                 
+  nrp?: string;                  
+  position?: string;         
+  contact?: string; 
+  achievement?: number;
+}
+
+
+
 
 export interface Progress {
   id: number;
