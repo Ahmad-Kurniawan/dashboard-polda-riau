@@ -61,7 +61,7 @@ export const riauCity: City[] = [
     totalTarget: 32474.14,
     companies: inhilCompanies,
     otherCompanies: inhilOtherCompanies,
-    policestations: [inhilPolsek],
+    policestations: inhilPolsek,
   },
   {
     id: 4,

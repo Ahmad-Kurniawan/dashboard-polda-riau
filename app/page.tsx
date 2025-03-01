@@ -28,7 +28,7 @@ const MapMarker = dynamic(() => import("@/components/MapMarker"), {
   ),
 });
 
-const MotionCard = motion.create(Card);
+const MotionCard = motion(Card);
 
 const DashboardRiauPage = () => {
   const [selectedCity, setSelectedCity] = useState<City | null>(null);
@@ -122,42 +122,6 @@ const DashboardRiauPage = () => {
           return sum;
         }, 0);
 
-        // const monoAchievement = allCompanies.reduce((sum, company) => {
-        //   if (company.monokulturAchievements) {
-        //     return (
-        //       sum +
-        //       Object.values(company.monokulturAchievements).reduce(
-        //         (a, b) => a + b,
-        //         0
-        //       )
-        //     );
-        //   }
-        //   return sum;
-        // }, 0);
-
-        // const tumpangSariAchievement = allCompanies.reduce((sum, company) => {
-        //   if (company.tumpangSariAchievements) {
-        //     return (
-        //       sum +
-        //       Object.values(company.tumpangSariAchievements).reduce(
-        //         (a, b) => a + b,
-        //         0
-        //       )
-        //     );
-        //   }
-        //   return sum;
-        // }, 0);
-
-        // const csrAchievement = allCompanies.reduce((sum, company) => {
-        //   if (company.csrAchievements) {
-        //     return (
-        //       sum +
-        //       Object.values(company.csrAchievements).reduce((a, b) => a + b, 0)
-        //     );
-        //   }
-        //   return sum;
-        // }, 0);
-
         return {
           monokulturAchievement: acc.monokulturAchievement + monoAchievement,
           tumpangSariAchievement:
@@ -205,7 +169,7 @@ const DashboardRiauPage = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="bg-blue-50 p-6 rounded-xl shadow-lg"
+            className=" p-6 rounded-xl bg-slate-50 shadow-lg"
           >
             <div className="flex items-start">
               <div className="relative h-16 w-16 mr-4 mt-1">
@@ -360,7 +324,7 @@ const DashboardRiauPage = () => {
             >
               <Card className="border-none rounded-xl shadow-lg hover:shadow-xl transition-all">
                 <CardHeader className="rounded-t-xl bg-blue-100">
-                  <CardTitle className="flex items-center text-xl gap-2 text-blue-600">
+                  <CardTitle className="flex items-center text-lg gap-2 text-blue-600">
                     <Building2 className="w-5 h-5 hidden md:block" />
                     {selectedCity
                       ? `Perusahaan Target di ${selectedCity.nama}`
@@ -437,7 +401,7 @@ const DashboardRiauPage = () => {
             >
               <Card className="border-none rounded-xl shadow-lg hover:shadow-xl transition-all">
                 <CardHeader className="rounded-t-xl bg-blue-100">
-                  <CardTitle className="flex items-center text-xl gap-2 text-blue-600">
+                  <CardTitle className="flex items-center text-lg gap-2 text-blue-600">
                     <Map className="w-5 h-5 hidden md:block text-blue-600" />
                     {selectedCity
                       ? `Daftar Polsek di ${selectedCity.nama}`
@@ -445,7 +409,7 @@ const DashboardRiauPage = () => {
                   </CardTitle>
                   {selectedCity ? (
                     <CardDescription>
-                      Total {selectedCity.polsek?.length || 0} polsek di wilayah
+                      Total {selectedCity.policestations?.length || 0} polsek di wilayah
                       ini.
                     </CardDescription>
                   ) : (
@@ -458,12 +422,12 @@ const DashboardRiauPage = () => {
                 <CardContent className="p-0 overflow-y-auto max-h-[500px]">
                   {selectedCity ? (
                     <div className="p-4">
-                      {selectedCity.polsek && selectedCity.polsek.length > 0 ? (
+                      {selectedCity.policestations && selectedCity.policestations.length > 0 ? (
                         <Table>
                           <TableBody>
-                            {selectedCity.polsek.map((polsek, index) => (
+                            {selectedCity.policestations.map((polsek, index) => (
                               <TableRow
-                                key={index}
+                                key={polsek.id}
                                 className="border-b hover:bg-blue-50/50 transition-colors"
                               >
                                 <motion.td
@@ -475,24 +439,7 @@ const DashboardRiauPage = () => {
                                 >
                                   {polsek.name}
                                 </motion.td>
-                                <motion.td
-                                  variants={tableRowVariants}
-                                  initial="hidden"
-                                  animate="visible"
-                                  transition={{ delay: index * 0.1 + 0.05 }}
-                                  className="p-4"
-                                >
-                                  {polsek.description || "-"}
-                                </motion.td>
-                                <motion.td
-                                  variants={tableRowVariants}
-                                  initial="hidden"
-                                  animate="visible"
-                                  transition={{ delay: index * 0.1 + 0.1 }}
-                                  className="p-4 text-right"
-                                >
-                                  {polsek.area} km²
-                                </motion.td>
+                                
                               </TableRow>
                             ))}
                           </TableBody>
@@ -531,7 +478,7 @@ const DashboardRiauPage = () => {
             >
               <Card className="border-none rounded-xl shadow-lg hover:shadow-xl transition-all">
                 <CardHeader className="rounded-t-xl bg-blue-100">
-                  <CardTitle className="flex items-center text-xl gap-2 text-blue-600">
+                  <CardTitle className="flex items-center text-lg gap-2 text-blue-600">
                     <Building2 className="w-5 h-5 hidden md:block text-blue-600" />
                     {selectedCity
                       ? `Perusahaan Lain/Society/Poktan di ${selectedCity.nama}`

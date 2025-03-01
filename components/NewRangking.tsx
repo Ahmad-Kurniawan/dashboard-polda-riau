@@ -589,10 +589,10 @@ const TabbedDataView: React.FC = () => {
           </TabsContent>
 
           <TabsContent value="chart">
-            <Card className="border-amber-200">
-              <CardHeader className="pb-2 bg-amber-50">
+            <Card className="border-blue-200">
+              <CardHeader className="pb-2 bg-blue-50">
                 <div className="flex justify-between items-center">
-                  <CardTitle className="text-lg font-semibold text-amber-800">
+                  <CardTitle className="text-lg font-semibold text-blue-800">
                     Visualisasi Capaian Kabupaten/Kota
                   </CardTitle>
                   <HoverCard>
@@ -676,7 +676,7 @@ const TabbedDataView: React.FC = () => {
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="mt-2 p-2 bg-amber-50 rounded text-sm text-center border border-amber-200">
+                <div className="mt-2 p-2 bg-blue-50 rounded text-sm text-center border border-blue-200">
                   Perbandingan Rekapan Dari Setiap Kabupaten/Kota
                 </div>
               </CardContent>
