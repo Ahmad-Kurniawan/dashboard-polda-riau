@@ -251,7 +251,7 @@ const PolsekDetail: React.FC<PolsekDetailProps> = ({
                         </span>
                       </div>
                       <span className="text-sm font-medium">
-                      {totalAchievement.toLocaleString("id-ID", {
+                        {totalAchievement.toLocaleString("id-ID", {
                           maximumFractionDigits: 2,
                         })}{" "}
                         dari{" "}
@@ -295,7 +295,15 @@ const PolsekDetail: React.FC<PolsekDetailProps> = ({
                   <Table>
                     <TableHeader>
                       <TableRow className="bg-gray-50">
-                        <TableHead className="font-medium text-">Nama Desa</TableHead>
+                        <TableHead className="font-medium text-">
+                          Nama Desa
+                        </TableHead>
+                        <TableHead className="font-medium text-center">
+                          Waktu Tanam
+                        </TableHead>
+                        <TableHead className="font-medium text-center">
+                          Waktu Panen
+                        </TableHead>
                         <TableHead className="font-medium text-center">
                           Target (Ha)
                         </TableHead>
@@ -317,6 +325,99 @@ const PolsekDetail: React.FC<PolsekDetailProps> = ({
                               )
                             : 0;
 
+                        // Calculate harvest time (waktu panen) by adding 4 months to planting time
+                        const convertIndonesianMonthToNumber = (monthName: string): number => {
+                          const months: { [key: string]: number } = {
+                            'januari': 0,
+                            'februari': 1,
+                            'maret': 2,
+                            'april': 3,
+                            'mei': 4,
+                            'juni': 5,
+                            'juli': 6,
+                            'agustus': 7,
+                            'september': 8,
+                            'oktober': 9,
+                            'november': 10,
+                            'desember': 11
+                          };
+                          
+                          // Ubah ke lowercase untuk mencocokkan dengan kamus
+                          const lowerCaseMonth = monthName.toLowerCase();
+                          return months[lowerCaseMonth] ?? -1; // Mengembalikan -1 jika bulan tidak ditemukan
+                        };
+                        
+                        // Fungsi untuk mengonversi format tanggal '01-Januari-2025' ke objek Date
+                        const parseIndonesianDate = (dateStr: string): Date | null => {
+                          if (!dateStr) return null;
+                          
+                          try {
+                            // Memisahkan tanggal, bulan, dan tahun
+                            const parts = dateStr.split('-');
+                            if (parts.length !== 3) return null;
+                            
+                            const day = parseInt(parts[0], 10);
+                            const monthName = parts[1];
+                            const year = parseInt(parts[2], 10);
+                            
+                            // Mendapatkan nomor bulan dari nama bulan
+                            const monthIndex = convertIndonesianMonthToNumber(monthName);
+                            if (monthIndex === -1) return null;
+                            
+                            // Membuat objek Date
+                            return new Date(year, monthIndex, day);
+                          } catch (error) {
+                            return null;
+                          }
+                        };
+                        
+                        // Fungsi untuk memformat Date ke format Indonesia '01-Januari-2025'
+                        const formatToIndonesianDate = (date: Date): string => {
+                          if (!date) return "-";
+                          
+                          const day = date.getDate().toString().padStart(2, '0');
+                          
+                          const monthNames = [
+                            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                          ];
+                          const month = monthNames[date.getMonth()];
+                          const year = date.getFullYear();
+                          
+                          return `${day}-${month}-${year}`;
+                        };
+                        
+                        // Fungsi yang diperbarui untuk menghitung waktu panen
+                        const calculateHarvestTime = (waktuTanam: string): string => {
+                          if (!waktuTanam) return "-";
+                          
+                          try {
+                            // Parsing tanggal dengan format Indonesia
+                            const plantDate = parseIndonesianDate(waktuTanam);
+                            
+                            // Jika tanggal tidak dapat di-parse, coba cara lain
+                            if (!plantDate) {
+                              // Coba parse sebagai tanggal standar jika format berbeda
+                              const stdDate = new Date(waktuTanam);
+                              if (!isNaN(stdDate.getTime())) {
+                                const harvestDate = new Date(stdDate);
+                                harvestDate.setMonth(harvestDate.getMonth() + 4);
+                                return formatToIndonesianDate(harvestDate);
+                              }
+                              return waktuTanam + " + 4 bulan";
+                            }
+                            
+                            // Menambahkan 4 bulan ke tanggal tanam
+                            const harvestDate = new Date(plantDate);
+                            harvestDate.setMonth(harvestDate.getMonth() + 4);
+                            
+                            // Memformat tanggal panen ke format Indonesia
+                            return formatToIndonesianDate(harvestDate);
+                          } catch (error) {
+                            return waktuTanam + " + 4 bulan";
+                          }
+                        };
+
                         return (
                           <TableRow key={village.id || index}>
                             <TableCell>
@@ -324,6 +425,12 @@ const PolsekDetail: React.FC<PolsekDetailProps> = ({
                                 <Home className="h-3.5 w-3.5 text-gray-400" />
                                 {village.name}
                               </div>
+                            </TableCell>
+                            <TableCell className="text-sm text-center">
+                              {village.waktuTanam || "-"}
+                            </TableCell>
+                            <TableCell className="text-sm text-center">
+                            {calculateHarvestTime(village.waktuTanam ?? "") || "-"}
                             </TableCell>
                             <TableCell className="text-sm text-center">
                               {village.target
@@ -340,15 +447,15 @@ const PolsekDetail: React.FC<PolsekDetailProps> = ({
                                 <div className="flex items-center justify-center gap-1">
                                   <span
                                     className={`
-                            ${
-                              achievementPercentage >= 80
-                                ? "text-green-600"
-                                : achievementPercentage >= 50
-                                ? "text-amber-600"
-                                : "text-red-600"
-                            }
-                            font-medium
-                          `}
+                ${
+                  achievementPercentage >= 80
+                    ? "text-green-600"
+                    : achievementPercentage >= 50
+                    ? "text-amber-600"
+                    : "text-red-600"
+                }
+                font-medium
+              `}
                                   >
                                     {achievementPercentage}%
                                   </span>
